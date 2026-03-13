@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Prompt Router | Expert Personas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="background-blob blob-1"></div>
+    <div class="background-blob blob-2"></div>
+    
+    <main class="glass-container">
+        <header>
+            <h1 class="gradient-text">Prompt Router</h1>
+            <p class="subtitle">Intelligent Intent Classification & Expert Routing</p>
+        </header>
+
+        <section class="chat-section">
+            <div class="input-group">
+                <textarea id="user-input" placeholder="Type your request here (e.g., '@code Write a Python API' or 'Help me with my resume')..."></textarea>
+                <button id="send-btn" class="primary-btn">
+                    <span>Route & Respond</span>
+                    <div class="loading-spinner hidden"></div>
+                </button>
+            </div>
+        </section>
+
+        <section id="results-section" class="results-container hidden">
+            <div class="insight-grid">
+                <div class="insight-card">
+                    <span class="label">Detected Intent</span>
+                    <div id="intent-badge" class="badge">---</div>
+                </div>
+                <div class="insight-card">
+                    <span class="label">Confidence Score</span>
+                    <div class="confidence-wrapper">
+                        <div class="confidence-bar-bg">
+                            <div id="confidence-fill" class="confidence-bar-fill" style="width: 0%"></div>
+                        </div>
+                        <span id="confidence-text">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="response-card">
+                <header class="card-header">
+                    <span class="expert-label">Expert Persona Response</span>
+                </header>
+                <div id="response-content" class="content-markdown">
+                    <!-- Response injected here -->
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>Experts available: <code>code</code>, <code>data</code>, <code>writing</code>, <code>career</code></p>
+            <p>Use <code>@intent</code> for manual override</p>
+        </footer>
+    </main>
+
+    <script>
+        const sendBtn = document.getElementById('send-btn');
+        const userInput = document.getElementById('user-input');
+        const resultsSection = document.getElementById('results-section');
+        const responseContent = document.getElementById('response-content');
+        const intentBadge = document.getElementById('intent-badge');
+        const confidenceFill = document.getElementById('confidence-fill');
+        const confidenceText = document.getElementById('confidence-text');
+        const loadingSpinner = document.querySelector('.loading-spinner');
+
+        sendBtn.addEventListener('click', async () => {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            // UI Loading State
+            sendBtn.disabled = true;
+            loadingSpinner.classList.remove('hidden');
+            sendBtn.querySelector('span').textContent = 'Classifying...';
+            resultsSection.classList.add('hidden');
+
+            try {
+                const response = await fetch('/route', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+
+                if (data.error) throw new Error(data.error);
+
+                // Update UI
+                intentBadge.textContent = data.intent.toUpperCase();
+                intentBadge.className = `badge intent-${data.intent}`;
+                
+                const confidence = Math.round(data.confidence * 100);
+                confidenceFill.style.width = `${confidence}%`;
+                confidenceText.textContent = `${confidence}%`;
+                
+                // Render Markdown
+                responseContent.innerHTML = marked.parse(data.response);
+                
+                resultsSection.classList.remove('hidden');
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (err) {
+                console.error(err);
+                alert('Error: ' + err.message);
+            } finally {
+                sendBtn.disabled = false;
+                loadingSpinner.classList.add('hidden');
+                sendBtn.querySelector('span').textContent = 'Route & Respond';
+            }
+        });
+
+        // Handle Cmd/Ctrl + Enter to send
+        userInput.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                sendBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>

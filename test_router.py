@@ -15,7 +15,12 @@ test_messages = [
     "what is a pivot table",
     "fxi thsi bug pls: for i in range(10) print(i)",
     "How do I structure a cover letter?",
-    "My boss says my writing is too verbose."
+    "My boss says my writing is too verbose.",
+    "@code Write a binary search in Python",
+    "@writing This is a very short sentence.",
+    "a", # Very short input
+    "This is a long message. " * 20, # Long input
+    "I need a python script to analyze this csv data." # Multi-intent
 ]
 
 def run_tests():

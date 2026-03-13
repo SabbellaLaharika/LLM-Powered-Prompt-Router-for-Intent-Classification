@@ -13,5 +13,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code into the container
 COPY . .
 
-# Command to run the test script (or main application)
-CMD ["python", "test_router.py"]
+# Command to run the application (Flask web server by default)
+CMD ["python", "app.py"]
