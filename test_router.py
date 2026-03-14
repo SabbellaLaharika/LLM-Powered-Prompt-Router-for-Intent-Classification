@@ -9,7 +9,7 @@ test_messages = [
     "Help me make this better.",
     "I need to write a function that takes a user id and returns their profile, but also i need help with my resume.",
     "hey",
-    "Can you write me a poem about clouds? (Should be 'unclear')",
+    "Can you write me a poem about clouds?",
     "Rewrite this sentence to be more professional.",
     "I'm not sure what to do with my career.",
     "what is a pivot table",
