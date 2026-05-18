@@ -2,6 +2,36 @@
 
 This application intelligently routes user requests to specialized AI personas based on classified intent. It uses a two-step process: first, it classifies the user's intent using a lightweight LLM call, and then it routes the message to an expert persona for a high-quality, specialized response.
 
+## 🚀 Real-World Use Case
+Imagine an **Enterprise Customer Support Bot**. Instead of one massive bot struggling to handle everything, our system:
+1. **Detects intent** (e.g., Billing, Tech Support, Sales).
+2. **Routes** to a highly specialized agent prompt.
+3. Provides a **high-quality, domain-specific** answer, avoiding mixed-up instructions.
+
+---
+
+## 🏗️ High-Level Architecture & Flow
+
+```mermaid
+graph TD
+    A[User Message] -->|Input| B(Intent Classifier Model<br>Llama 3.1 8b / GPT-3.5)
+    B -->|Outputs JSON| C{Confidence > 0.7?}
+    
+    C -->|No / Unclear| D[Ask for Clarification]
+    C -->|Yes| E{Match Intent}
+    
+    E -->|code| F[Code Expert Persona<br>Llama 3.3 70b / GPT-4]
+    E -->|data| G[Data Expert Persona<br>Llama 3.3 70b / GPT-4]
+    E -->|writing| H[Writing Coach Persona<br>Llama 3.3 70b / GPT-4]
+    E -->|career| I[Career Advisor Persona<br>Llama 3.3 70b / GPT-4]
+    
+    F --> J[Final Specialized Response]
+    G --> J
+    H --> J
+    I --> J
+    D --> J
+```
+
 ## Interface Options
 - **Web UI (Recommended)**: A premium, modern dashboard to visualize classification and see expert responses.
 - **Interactive CLI**: Real-time chat mode in the terminal.
@@ -32,7 +62,27 @@ We use JSON Lines for logging. This ensures that even if the app crashes during 
 ### 4. Robustness & Error Handling
 The `classify_intent` function is wrapped in defensive try-except blocks. Any LLM parsing failure defaults to the `unclear` intent with `0.0` confidence. This ensures the system always remains conversational and never crashes due to unexpected API responses.
 
-## Verification
+---
+
+## ⚙️ Challenges & Solutions
+
+| Challenge | How it was Solved |
+| :--- | :--- |
+| **Ambiguous Intents**<br>The classifier struggled to differentiate between "creative writing" (generate a poem) and "editing" (fix my grammar). | **Explicit Prompt Constraints**<br>Added strict negative constraints to the `classification_prompt`: *"CRITICAL RULE: The 'writing' category is ONLY for editing... generating from scratch MUST be 'unclear'."* |
+| **JSON Parsing Errors**<br>LLMs occasionally return invalid JSON, crashing the backend. | **Defensive Error Handling**<br>Implemented `try-except` blocks. If parsing fails, it safely defaults to the `unclear` intent with `0.0` confidence to keep the system running gracefully. |
+
+---
+
+## 🔮 Limitations & Future Scope
+
+- **Current Limitation:** The system is stateless and does not retain conversation memory, meaning follow-up questions lack context.
+- **Future Improvement (Memory):** Implement a Vector DB (like Pinecone) or simple session-based memory arrays for context-aware follow-ups.
+- **Future Improvement (Speed):** Add a caching layer (Redis) to instantly return responses for identical queries without hitting the LLM API.
+- **Future Improvement (UX):** Implement Server-Sent Events (SSE) for streaming responses to the frontend.
+
+---
+
+## 🧪 Verification & Testing
 The system includes a batch test suite in `test_router.py` containing **27 test cases** that evaluate:
 - Clear intent detection.
 - Multi-intent queries.
