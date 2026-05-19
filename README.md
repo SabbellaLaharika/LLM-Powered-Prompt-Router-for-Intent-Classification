@@ -32,6 +32,43 @@ graph TD
     D --> J
 ```
 
+## 🚀 Getting Started (How to Run)
+
+### Prerequisites
+- Python 3.9+
+- OpenAI or Groq API Key
+- Docker (optional)
+
+### 1. Local Setup
+```bash
+# Clone the repository
+git clone https://github.com/YourUsername/LLM-Powered-Prompt-Router-for-Intent-Classification.git
+cd LLM-Powered-Prompt-Router-for-Intent-Classification
+
+# Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env and add your OPENAI_API_KEY or GROQ_API_KEY
+```
+
+### 2. Running the Application
+**Via Python (Flask):**
+```bash
+python app.py
+```
+*The Web UI will be available at http://127.0.0.1:5000*
+
+**Via Docker:**
+```bash
+docker-compose up --build
+```
+
 ## Interface Options
 - **Web UI (Recommended)**: A premium, modern dashboard to visualize classification and see expert responses.
 - **Interactive CLI**: Real-time chat mode in the terminal.
