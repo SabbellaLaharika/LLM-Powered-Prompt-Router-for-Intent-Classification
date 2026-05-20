@@ -62,7 +62,7 @@ cp .env.example .env
 ```bash
 python app.py
 ```
-*The Web UI will be available at http://127.0.0.1:5000*
+*The Web UI will be available at http://127.0.0.1:5000* or http://localhost:5000/
 
 **Via Docker:**
 ```bash
