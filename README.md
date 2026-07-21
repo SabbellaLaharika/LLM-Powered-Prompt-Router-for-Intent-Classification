@@ -1,10 +1,10 @@
 # LLM-Powered Prompt Router for Intent Classification
 
-This application intelligently routes user requests to specialized AI personas based on classified intent. It uses a two-step process: first, it classifies the user's intent using a lightweight LLM[...] 
+[![Watch Demo on YouTube](https://img.shields.io/badge/Watch%20Demo-on%20YouTube-red?logo=youtube&style=for-the-badge)](https://youtu.be/vYN9dXsWkX4)
+
+This application intelligently routes user requests to specialized AI personas based on classified intent. It uses a two-step process: first, it classifies the user's intent using a lightweight LLM[...]
 
 🎥 Project Demo
-
-[![Watch on YouTube](https://img.shields.io/badge/Watch%20on%20YouTube-red?logo=youtube&style=for-the-badge)](https://youtu.be/vYN9dXsWkX4)
 
 Watch the demo on YouTube: https://youtu.be/vYN9dXsWkX4
 
