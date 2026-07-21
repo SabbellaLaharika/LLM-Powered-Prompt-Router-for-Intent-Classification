@@ -1,12 +1,10 @@
 # LLM-Powered Prompt Router for Intent Classification
 
+This application intelligently routes user requests to specialized AI personas based on classified intent. It uses a two-step process: first, it classifies the user's intent using a lightweight LLM call, and then it routes the message to an expert persona for a high-quality, specialized response.
+
 [![Watch Demo on YouTube](https://img.shields.io/badge/Watch%20Demo-on%20YouTube-red?logo=youtube&style=for-the-badge)](https://youtu.be/vYN9dXsWkX4)
 
-This application intelligently routes user requests to specialized AI personas based on classified intent. It uses a two-step process: first, it classifies the user's intent using a lightweight LLM[...]
-
-🎥 Project Demo
-
-Watch the demo on YouTube: https://youtu.be/vYN9dXsWkX4
+🎥 Project Demo — Watch on YouTube
 
 ---
 
@@ -85,17 +83,17 @@ docker-compose up --build
 ## Advanced Features (Stretch Goals)
 The application goes beyond the basic requirements with several advanced features:
 - **Premium Web UI**: A modern dashboard featuring glassmorphism, real-time confidence bars, and responsive markdown rendering.
-- **Provider-Agnostic Engine**: Automatic detection for **Groq** and **OpenAI** API keys. If a Groq key is used, the system automatically redirects to Groq's API and optimizes model selection (`Ll[...]
+- **Provider-Agnostic Engine**: Automatic detection for **Groq** and **OpenAI** API keys. If a Groq key is used, the system automatically redirects to Groq's API and optimizes model selection (`Llama 3.1/3.3`).
 - **Confidence Thresholding**: Implemented a `CONFIDENCE_THRESHOLD = 0.7`. Classification results below this score are automatically redirected to the clarification flow to prevent hallucinations.
 - **Manual Intent Overrides**: Users can bypass the AI classifier by prefixing their messages with `@intent` (e.g., `@code`, `@data`, `@writing`, `@career`).
 - **Port Resiliency**: The Flask server handles port conflicts gracefully, ensuring the application stays runnable even if port 5000 is occupied.
 
 ## Design Decisions & Architecture
 ### 1. Two-Step Routing Architecture
-We separate the "Thinking" (Classification) from the "Doing" (Generation). This allows us to use cheap, fast models for intent detection and highly specialized, instruction-dense prompts for the e[...]
+We separate the "Thinking" (Classification) from the "Doing" (Generation). This allows us to use cheap, fast models for intent detection and highly specialized, instruction-dense prompts for the expert personas. This design is significantly more scalable and resistant to "prompt leakage" than a single monolithic prompt.
 
 ### 2. Configurable 'Expert' Personalities
-All system prompts are isolated in `prompts.json`. Each expert has a distinct tone, style, and set of constraints defined in their persona, ensuring high-quality specialized responses without over[...]
+All system prompts are isolated in `prompts.json`. Each expert has a distinct tone, style, and set of constraints defined in their persona, ensuring high-quality specialized responses without overlapping behaviors.
 
 ### 3. Observability with JSONL
 We use JSON Lines for logging. This ensures that even if the app crashes during a session, all historical logs remain valid JSON objects. Each entry includes:
@@ -105,7 +103,7 @@ We use JSON Lines for logging. This ensures that even if the app crashes during 
 - `final_response`: The routed expert's answer.
 
 ### 4. Robustness & Error Handling
-The `classify_intent` function is wrapped in defensive try-except blocks. Any LLM parsing failure defaults to the `unclear` intent with `0.0` confidence. This ensures the system always remains co[...]
+The `classify_intent` function is wrapped in defensive try-except blocks. Any LLM parsing failure defaults to the `unclear` intent with `0.0` confidence. This ensures the system always remains conversational and never crashes due to unexpected API responses.
 
 ---
 
@@ -113,8 +111,8 @@ The `classify_intent` function is wrapped in defensive try-except blocks. Any LL
 
 | Challenge | How it was Solved |
 | :--- | :--- |
-| **Ambiguous Intents**<br>The classifier struggled to differentiate between "creative writing" (generate a poem) and "editing" (fix my grammar). | **Explicit Prompt Constraints**<br>Added strict[...]
-| **JSON Parsing Errors**<br>LLMs occasionally return invalid JSON, crashing the backend. | **Defensive Error Handling**<br>Implemented `try-except` blocks. If parsing fails, it safely defaults t[...]
+| **Ambiguous Intents**<br>The classifier struggled to differentiate between "creative writing" (generate a poem) and "editing" (fix my grammar). | **Explicit Prompt Constraints**<br>Added strict negative constraints to the `classification_prompt`: *"CRITICAL RULE: The 'writing' category is ONLY for editing... generating from scratch MUST be 'unclear'."* |
+| **JSON Parsing Errors**<br>LLMs occasionally return invalid JSON, crashing the backend. | **Defensive Error Handling**<br>Implemented `try-except` blocks. If parsing fails, it safely defaults to the `unclear` intent with `0.0` confidence to keep the system running gracefully. |
 
 ---
 
