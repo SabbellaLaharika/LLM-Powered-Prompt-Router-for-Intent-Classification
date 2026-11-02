@@ -6,7 +6,7 @@ This application intelligently routes user requests to specialized AI personas b
 
 ## 🎥 Project Demo
 
-[![Watch the project demo on YouTube](https://img.youtube.com/vi/OPDXAa8K4P0/hqdefault.jpg)](https://youtu.be/OPDXAa8K4P0)
+[![Watch the project demo on YouTube](https://img.youtube.com/vi/OPDXAa8K4P0/maxresdefault.jpg)](https://youtu.be/OPDXAa8K4P0)
 
 
 ---
